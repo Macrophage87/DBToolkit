@@ -1,0 +1,18 @@
+Package: DBToolkit
+Type: Package
+Title: Database Toolkit
+Version: 0.1.0
+Author: person("Stephen", "Cieply", email = "sjcieply@gmail.com", 
+  role = c("aut", "cre"))
+Maintainer: The package maintainer <sjcieply@gmail.com>
+Description: This is a simple set of tools for working with databases.
+    It allows for easy use of mySQL and MariaDB databases based on credentials provided in a config file.
+License: None at the moment, contact me if you want to use it.
+Encoding: UTF-8
+LazyData: true
+
+Imports:
+  data.table,
+  glue,
+  RMariaDB,
+  magrittr
