@@ -25,10 +25,9 @@ db_connect <-
         cred <- config::get(user_db, file = conf_path)
         }
 
-    require(RMariaDB)
     return(
-      dbConnect(
-        drv = MariaDB(),
+      RMariaDB::dbConnect(
+        drv = RMariaDB::MariaDB(),
         driver = "MySQL Driver",
         username = cred$username,
         password = cred$password,
@@ -45,18 +44,15 @@ db_query <-function(...,
                     params = NULL,
                     database = NULL,
                     user_db = "shiny_mysql") {
-  require(glue)
-  require(data.table)
-  require(magrittr)
   con <- db_connect(database = database, user_db = user_db)
 
-  query <- glue_sql(..., .con = con)
+  query <- glue::glue_sql(..., .con = con)
 
-  res <- dbSendQuery(con, query)
+  res <- RMariaDB::dbSendQuery(con, query)
   if (!is.null(params)) {
-    dbBind(res, params)
+    RMariaDB::dbBind(res, params)
   }
-  opt <- dbFetch(res) %>% as.data.table()
+  opt <- RMariaDB::dbFetch(res) %>% data.table::as.data.table()
   dbClearResult(res)
   dbDisconnect(con)
 
@@ -69,24 +65,22 @@ db_statement <-  function(...,
                           database = NULL,
                           user_db = "shiny_mysql",
                           increment = FALSE) {
-  require(glue)
-  require(data.table)
   con <- db_connect(database = database, user_db = user_db)
 
-  statement <- glue_sql(..., .con = con)
+  statement <- glue::glue_sql(..., .con = con)
 
-  res <- dbSendStatement(con, statement)
+  res <- RMariaDB::dbSendStatement(con, statement)
   if (!is.null(params)) {
-    dbBind(res, params)
+    RMariaDB::dbBind(res, params)
   }
-  rows <- dbGetRowsAffected(res)
-  dbClearResult(res)
+  rows <- RMariaDB::dbGetRowsAffected(res)
+  RMariaDB::dbClearResult(res)
 
   if(increment==TRUE){
-    rows<-dbGetQuery("SELECT LAST_INSERT_ID();", conn = con)
+    rows<-RMariaDB::dbGetQuery("SELECT LAST_INSERT_ID();", conn = con)
   }
 
-  dbDisconnect(con)
+  RMariaDB::dbDisconnect(con)
 
   return(rows)
 }
@@ -97,13 +91,12 @@ db_write <-  function(data, table_name,
                           overwrite=FALSE,
                           append = FALSE
                           ) {
-  require(data.table)
+
   con <- db_connect(database = database, user_db = user_db)
 
-  dbWriteTable(con, table_name, data, overwrite = overwrite, append = append)
+  RMariaDB::dbWriteTable(con, table_name, data, overwrite = overwrite, append = append)
 
-  dbDisconnect(con)
+  RMariaDB::dbDisconnect(con)
 
   return(rows)
 }
-
