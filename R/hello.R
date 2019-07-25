@@ -1,18 +1,3 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Ctrl + Shift + B'
-#   Check Package:             'Ctrl + Shift + E'
-#   Test Package:              'Ctrl + Shift + T'
-
 
 db_connect <-
   function(database = NULL, user_db = "shiny_mysql") {
@@ -53,8 +38,8 @@ db_query <-function(...,
     RMariaDB::dbBind(res, params)
   }
   opt <- RMariaDB::dbFetch(res) %>% data.table::as.data.table()
-  dbClearResult(res)
-  dbDisconnect(con)
+  RMariaDB::dbClearResult(res)
+  RMariaDB::dbDisconnect(con)
 
   return(opt)
 }
@@ -98,5 +83,5 @@ db_write <-  function(data, table_name,
 
   RMariaDB::dbDisconnect(con)
 
-  return(rows)
+  return(TRUE)
 }
